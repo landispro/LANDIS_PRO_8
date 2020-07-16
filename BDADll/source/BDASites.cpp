@@ -406,7 +406,7 @@ void BDASites::BefStChg(int i, int j)
 				}
 			else
 				{
-					printf("num of vectors %d\n",SortedIndex.size());
+					printf("num of vectors %zd\n",SortedIndex.size());
 					printf("ERROR ERROR ERROR ERROR!!~~~%d\n",pos);
 					//
 					dumpsite(sitetouse);
