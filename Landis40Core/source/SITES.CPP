@@ -996,7 +996,7 @@ void SITES::SiteDynamics(SiteDynmParam* param)
 		GetRDofSite(Row, Col);
 		
 		SITES::Selfthinning(siteptr, l, Row, Col, ppdp);
-	}
+					}
 	else
 	{
 		SeedGermination(siteptr, l, RDflag);
@@ -1992,8 +1992,8 @@ void SITES::SeedGermination(SITE* siteptr, LANDUNIT *l, int RDFlag)
 						Seedling[i - 1] = specie_i->AvailableSeed * l->probRepro(i) + temp;
 
 						const int ran = rand() % 10 + 1; // ran in the range 1 to 10
-
-						if (ran <= 1)
+						//Sam Zou
+						if ((ran <= 1) && (Seedling[i - 1] > 1.0e-14))
 							Seedling[i - 1] += 1;
 					}
 
@@ -2024,8 +2024,8 @@ void SITES::SeedGermination(SITE* siteptr, LANDUNIT *l, int RDFlag)
 						Seedling[i - 1] = seedlingTemp * l->probRepro(i) + temp;
 
 						const int ran = rand() % 10 + 1; // ran in the range 1 to 10
-
-						if (ran <= 1)
+						//Sam Zou
+						if ((ran <= 1) && (Seedling[i - 1] > 1.0e-14))
 							Seedling[i - 1] += 1;
 					}
 
@@ -2077,8 +2077,8 @@ void SITES::SeedGermination(SITE* siteptr, LANDUNIT *l, int RDFlag)
 						Seedling[i - 1] = specie_i->AvailableSeed * l->probRepro(i) + temp;
 
 						const int ran = rand() % 10 + 1; // ran in the range 1 to 10
-
-						if (ran <= 1)
+						//Sam Zou
+						if ((ran <= 1) && (Seedling[i - 1] > 1.0e-14))
 							Seedling[i - 1] += 1;
 					}
 				}
@@ -2105,8 +2105,8 @@ void SITES::SeedGermination(SITE* siteptr, LANDUNIT *l, int RDFlag)
 						Seedling[i - 1] = seedlingTemp * l->probRepro(i) + temp;
 
 						const int ran = rand() % 10 + 1; // ran in the range 1 to 10
-
-						if (ran <= 1)
+						//Sam Zou
+						if ((ran <= 1) && (Seedling[i - 1] > 1.0e-14))
 							Seedling[i - 1] += 1;
 					}
 				}
@@ -2157,7 +2157,8 @@ void SITES::SeedGermination(SITE* siteptr, LANDUNIT *l, int RDFlag)
 						
 						const int ran = rand() % 10 + 1; // ran in the range 1 to 10
 
-						if (ran <= 1)
+						//Sam Zou
+						if ((ran <= 1) && (Seedling[i - 1] > 1.0e-14))
 							Seedling[i - 1] += 1;
 					}
 				}
@@ -2187,7 +2188,8 @@ void SITES::SeedGermination(SITE* siteptr, LANDUNIT *l, int RDFlag)
 
 						const int ran = rand() % 10 + 1; // ran in the range 1 to 10
 
-						if (ran <= 1)
+						//Sam Zou
+						if ((ran <= 1) && (Seedling[i - 1] > 1.0e-14))
 							Seedling[i - 1] += 1;
 					}
 				}
