@@ -167,8 +167,10 @@ char reMethods[MAX_RECLASS][80], ageMaps[MAX_SPECIES][80];
 int gDLLMode;
 
 
-// static const int max_thread_num = omp_get_max_threads() - 1;
-static const int max_thread_num = omp_get_max_threads();
+static const int max_thread_num = omp_get_max_threads() - 1;
+//static const int max_thread_num = 1;
+
+//static const int max_thread_num = omp_get_max_threads();
 int* gl_cpuid = new int [max_thread_num]();
 
 void putHarvestOutput(int itr, double wAdfGeoTransform[], int trackflag)
@@ -1980,9 +1982,12 @@ void singularLandisIteration(int itr, int snr, int snc, double wAdfGeoTransform[
 
 	if (itr % sites.TimeStep == 0)
 	{
+		printf("\nBegin processing model year %d\n", (itr));
+		printf("==========================================================================\n");
+		
 		time(&ltime);
 
-		printf("Start succession ... at %s\n", ctime(&ltime));
+		printf("\nStart succession ... at %s\n", ctime(&ltime));
 
 		srand(parameters.randSeed + itr / sites.TimeStep * 6);
 

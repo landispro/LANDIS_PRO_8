@@ -995,8 +995,9 @@ void SITES::SiteDynamics(SiteDynmParam* param)
 
 		GetRDofSite(Row, Col);
 		
-		SITES::Selfthinning(siteptr, l, Row, Col, ppdp);
-					}
+		//SITES::Selfthinning(siteptr, l, Row, Col, ppdp);
+		SITES::SelfthinningTest(siteptr, l, Row, Col, ppdp);
+	}
 	else
 	{
 		SeedGermination(siteptr, l, RDflag);
@@ -1035,9 +1036,92 @@ void SITES::ListbubbleSort(vector<double>& AreaList, vector<int>& SpecIndexArr, 
 }
 
 
+void SITES::SelfthinningTest(SITE* siteptr, LANDUNIT* l, int row, int col, const PDP* ppdp)
+{
+	const int num_specie = siteptr->number();
+	const float TargetRD = siteptr->RD - l->MaxRD;
 
+	static const float shadeArray[6] = { 0.0f, 0.1f, 0.3f, 0.5f, 0.7f, 0.9f };
 
+	if (TargetRD <= 0)
+		return;
 
+	//---- Calculate Quadratic Mean Diameter (QMD) ----
+	double basalQMD = 0;
+	int treeQMD = 0;
+
+	for (int spec_i = 1; spec_i <= num_specie; spec_i++)
+	{
+		SPECIESATTR* specatt_i = siteptr->specAtt(spec_i);
+		SPECIE* lc_specie = siteptr->SpecieIndex(spec_i);
+		const int m_end = specatt_i->longevity / TimeStep;
+
+		for (int m = 1; m <= m_end; m++)
+		{
+			const float lc_growrate = SITES::GetGrowthRates(spec_i, m, l->ltID);
+			const unsigned int lc_treenum = lc_specie->getTreeNum(m, spec_i);
+
+			basalQMD += lc_treenum * (pow(lc_growrate, 2) * 0.00007854) / (pow(CellSize, 2) / 10000);
+			treeQMD += lc_treenum / (pow(CellSize, 2) / 10000);
+		}
+	}
+	double qmd = sqrt((basalQMD / treeQMD) / 0.00007854);
+
+	//---- Create mortality rank ----
+	vector<double> MortList;
+	vector<int> SpecIndexArray;
+	vector<int> AgeIndexArray;
+
+	MortList.clear();
+	SpecIndexArray.clear();
+	AgeIndexArray.clear();
+
+	for (int spec_i = 1; spec_i <= num_specie; spec_i++)
+	{
+		SPECIESATTR* specatt_i = siteptr->specAtt(spec_i);
+		SPECIE* lc_specie = siteptr->SpecieIndex(spec_i);
+		const int m_end = specatt_i->longevity / TimeStep;
+
+		for (int m = 1; m <= m_end; m++)
+		{
+			double rel_dia = SITES::GetGrowthRates(spec_i, m, l->ltID) / qmd;
+			double mort = (0.84525 - (0.01074 * rel_dia) + (0.0000002 * pow(rel_dia, 3))) * (1 - shadeArray[specatt_i->shadeTolerance]);
+
+			MortList.push_back(mort);
+			SpecIndexArray.push_back(spec_i);
+			AgeIndexArray.push_back(m);
+		}
+	}
+
+	ListbubbleSort(MortList, SpecIndexArray, AgeIndexArray);
+
+	double countRD = TargetRD;
+
+	for (int i = MortList.size() - 1; i > 0 ; i--)
+	{
+		SPECIE* lc_specie = siteptr->SpecieIndex(SpecIndexArray[i]);
+
+		const unsigned int lc_treenum = lc_specie->getTreeNum(AgeIndexArray[i], SpecIndexArray[i]);
+		if (lc_treenum <= 0) { continue; }
+		
+		SPECIESATTR* specatt_i = siteptr->specAtt(SpecIndexArray[i]);
+
+		const float lc_growrate = SITES::GetGrowthRates(SpecIndexArray[i], AgeIndexArray[i], l->ltID);
+		const float max_area = specatt_i->MaxAreaOfSTDTree;
+		const double consterm = pow((lc_growrate / 25.4), 1.605) * max_area;
+
+		int deadTrees = (int)round(MortList[i] * lc_treenum);
+
+		float tmp_term1 = (float)pow((lc_growrate / 25.4), 1.605);
+		float tmp_term2 = max_area;
+		int tmp_term3 = deadTrees;
+		float deadRD = tmp_term1 * tmp_term2 * tmp_term3 / (float)pow(CellSize, 2);
+
+		lc_specie->setTreeNum(AgeIndexArray[i], SpecIndexArray[i], (unsigned int)(lc_treenum - deadTrees));
+		countRD -= deadRD;
+		if (countRD < 0) break;
+	}
+}
 
 
 void SITES::Selfthinning(SITE* siteptr, LANDUNIT *l, int row, int col, const PDP* ppdp)

@@ -1153,13 +1153,15 @@ void putOutput_Landis70Pro(int rep, int itr, int freq[], double wAdfGeoTransform
 	const int RDenflag = sites.GetOutputGeneralFlagArray(sites.specNum, RDensity);
 	const int TPA_flag = sites.GetOutputGeneralFlagArray(sites.specNum, TPA);
 
+	pafScanline1 = (float*)CPLMalloc(sizeof(float) * total_size);
+	pafScanline2 = (float*)CPLMalloc(sizeof(float) * total_size);
+	pafScanline3 = (float*)CPLMalloc(sizeof(float) * total_size);
+	pafScanline4 = (float*)CPLMalloc(sizeof(float) * total_size);
+	pafScanline5 = (float*)CPLMalloc(sizeof(float) * total_size);
+
+
 	if (Bio_flag || Car_flag || BA_flag || RDenflag || TPA_flag)
 	{
-		pafScanline1 = (float *)CPLMalloc(sizeof(float)* total_size);
-		pafScanline2 = (float *)CPLMalloc(sizeof(float)* total_size);
-		pafScanline3 = (float *)CPLMalloc(sizeof(float)* total_size);
-		pafScanline4 = (float *)CPLMalloc(sizeof(float)* total_size);
-		pafScanline5 = (float *)CPLMalloc(sizeof(float)* total_size);
 
 		//1.Bio
 		if (Bio_flag)
@@ -1969,7 +1971,7 @@ void putOutput(int rep, int itr, int freq[], double wAdfGeoTransform[])
 
 	for (int i = 1; ((i <= sites.specNum) && (!rep)); i++) //Nim: changed int i to i
 	{
-		printf("creating %d %d %s %s\n", sites.specNum, rep, speciesAttrs(i)->name, "age map");
+		//printf("creating %d %d %s %s\n", sites.specNum, rep, speciesAttrs(i)->name, "age map");
 
 		speciesAgeMap(m, speciesAttrs(i)->name);
 

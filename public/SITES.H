@@ -206,6 +206,8 @@ public:
 
 	void Selfthinning(SITE* siteptr, LANDUNIT *l, int row, int col, const PDP* ppdp);
 
+	void SelfthinningTest(SITE* siteptr, LANDUNIT* l, int row, int col, const PDP* ppdp);
+
 	void SeedGermination(SITE* siteptr, LANDUNIT *l, int RDFlag);
 
 	void NaturalMortality_killbytargetRD(SITE * siteptr, int Row, int Col, double targetRD);

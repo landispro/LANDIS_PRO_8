@@ -81,7 +81,8 @@ void seeding_prob::cal_prob4square(const int spec_id, const int numcellside)
 	const int lwlmt = -hilmt;
 
 	double sum = 0;
-
+	int ii = 0;
+	int jj = 0;
 	for(int relative_col=hilmt; relative_col>=lwlmt; relative_col--)
 	{
 		const float y_cor1 = (relative_col - 0.5f) * cell_size;
@@ -105,7 +106,9 @@ void seeding_prob::cal_prob4square(const int spec_id, const int numcellside)
 				prob4square[spec_id][hilmt + relative_col][relative_row - lwlmt] = prob4square[spec_id][relative_row - lwlmt][hilmt - relative_col];
 
 			sum += prob4square[spec_id][relative_row - lwlmt][hilmt - relative_col];
+			jj += 1;
 		}
+		ii += 1;
 	}
 
 	// FILE* fp = fopen("o.txt", "w");
