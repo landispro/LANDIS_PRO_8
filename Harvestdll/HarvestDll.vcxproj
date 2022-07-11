@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -21,30 +21,29 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{06A6B13A-C36E-4D90-BB07-E36EE70F8865}</ProjectGuid>
     <RootNamespace>HarvestDll</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -69,7 +68,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+    <_ProjectFileVersion>15.0.28307.799</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>.\..\output\</OutDir>
@@ -80,8 +79,6 @@
     <OutDir>$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\GDAL\include;C:\Program Files (x86)\Visual Leak Detector\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\GDAL\lib;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>.\..\Releaseoutput\</OutDir>
@@ -92,8 +89,6 @@
     <OutDir>$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\GDAL\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\GDAL\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -149,7 +144,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\public;..\GDAL\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;HARVESTDLL_EXPORTS;__HARVEST__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -169,10 +164,10 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>cairo.lib;fontconfig.lib;freetype2411.lib;freexl.lib;freexl_i.lib;fribidi.lib;cfitsio.lib;clientlib.lib;expat.lib;gd.lib;gdal_i.lib;geos.lib;giflib.lib;harfbuzz.lib;hdf5.lib;hdf5_cpp.lib;hdf5_hl.lib;hdf5_hl_cpp.lib;hdfdll.lib;libecwj2.lib;spatialite_i.lib;ssleay32.lib;szip.lib;xdrdll.lib;xerces-c_2.lib;zdll.lib;zlib.lib;iconv.lib;minizip.lib;netcdf.lib;openjp2.lib;pixman-1.lib;poppler.lib;proj.lib;proj_i.lib;spatialite.lib;libcurl_imp.lib;libtiff_i.lib;libxml2.lib;mapserver.lib;mfhdfdll.lib;libeay32.lib;libmysql.lib;libpng.lib;libpq.lib;libpqdll.lib;libsvg.lib;libsvg-cairo.lib;libfcgi.lib;libkmldom.lib;libkmlengine.lib;libkmlregionator.lib;libkmlxsd.lib;libjbig.lib;libjpeg.lib;libkea.lib;libkmlbase.lib;libkmlconvenience.lib</AdditionalDependencies>
-      <OutputFile>..\$(Platform)\$(Configuration)\HarvestDll.dll</OutputFile>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;LandisProCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\..\DebugOutput64/HarvestDll.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\GDAL\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\output;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\..\output/HarvestDll.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -235,7 +230,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\public;..\GDAL\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;HARVESTDLL_EXPORTS;__HARVEST__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -254,10 +249,10 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>cairo.lib;fontconfig.lib;freetype2411.lib;freexl.lib;freexl_i.lib;fribidi.lib;cfitsio.lib;clientlib.lib;expat.lib;gd.lib;gdal_i.lib;geos.lib;giflib.lib;harfbuzz.lib;hdf5.lib;hdf5_cpp.lib;hdf5_hl.lib;hdf5_hl_cpp.lib;hdfdll.lib;libecwj2.lib;spatialite_i.lib;ssleay32.lib;szip.lib;xdrdll.lib;xerces-c_2.lib;zdll.lib;zlib.lib;iconv.lib;minizip.lib;netcdf.lib;openjp2.lib;pixman-1.lib;poppler.lib;proj.lib;proj_i.lib;spatialite.lib;libcurl_imp.lib;libtiff_i.lib;libxml2.lib;mapserver.lib;mfhdfdll.lib;libeay32.lib;libmysql.lib;libpng.lib;libpq.lib;libpqdll.lib;libsvg.lib;libsvg-cairo.lib;libfcgi.lib;libkmldom.lib;libkmlengine.lib;libkmlregionator.lib;libkmlxsd.lib;libjbig.lib;libjpeg.lib;libkea.lib;libkmlbase.lib;libkmlconvenience.lib</AdditionalDependencies>
-      <OutputFile>..\$(Platform)\$(Configuration)\HarvestDll.dll</OutputFile>
+      <AdditionalDependencies>LandisProCore.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\..\Releaseoutput64/HarvestDll.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\GDAL\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../output;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>.\..\output/HarvestDll.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />

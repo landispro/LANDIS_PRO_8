@@ -29,10 +29,16 @@ public:
 	seeding_prob();
 
 	~seeding_prob();
-
+	double qql(float x, float y);
+	double fx(double alpha, double x);
+	double caculate_integration(double a, double b, int precision);
+	bool isEqual(double a, double b);
+	double function(double x);
 	void cal_seeding_prob(const int cell_size, const int specNum_in, const int* speces_maxD_in, const int* specesefctD_in, const int snr_in, const int snc_in);
 
 	double get_seed_prob(const int spec_id, const int relative_row, const int relative_col);
+
+	double get_seed_prob_circle(const int spec_id, const int relative_row, const int relative_col);
 	
 	void print() const;
 
@@ -41,6 +47,8 @@ public:
 private:
 
 	void cal_prob4square(const int spec_id, const int numcellside);
+
+	void cal_prob4circle(const int spec_id, const int numcellside);
 
 	void Gen_dist_vect(const int k, const int numcell_all, const double minprob, const double maxprob);
 
@@ -54,6 +62,11 @@ private:
 	
 	int check_prob(const double x_val, const int n);
 
+	double cal_circle_prob(const float x, const float y) const;
+
+	double cal_probability_circle(const float x_cor1, const float x_cor2, const float y_cor1, const float y_cor2, const int relative_row, const int relative_col) const;
+
+	int check_prob_circle(const double x_val, const int n);
 private:
 	
 	int specNum;
@@ -63,6 +76,7 @@ private:
 	float cell_size;
 	float alpha;
 	int prob_n;
+	int alpha_index;
 
 	double constsca;
 
@@ -78,6 +92,9 @@ private:
 
 	int* hilmt4spec; //record hilmt for each species
 	int* wghts;
+
+	double *** prob4circle;
+	bool iscircle=false;
 };
 
 #endif  

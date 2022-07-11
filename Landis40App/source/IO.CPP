@@ -77,6 +77,7 @@ vector<string> DBHFileNames; //add By Qia on April 09 2010
 vector<string> RDFileNames;// Add by Qia on Nov 03 2010
 vector<string> SeedsFileNames;//Add By Qia on Nov 03 2010
 
+
 // int flagoutputBiomass;
 // int flagoutputBasal;
 // int flagoutputTrees;
@@ -336,7 +337,14 @@ void initiateOutput_landis70Pro()
 		{
 			sprintf(filename, "%s_Bio", speciesAttrs(i)->name);
 
-			BioMassFileNames.push_back(string(filename));
+			string a = string(filename);
+			try {
+				BioMassFileNames.push_back(a);
+			}
+			catch (exception e)
+			{
+			
+			}
 		}
 
 		// flagoutputBiomass = 1;
@@ -2255,7 +2263,6 @@ void inputLandtypeImg(GDALDataset* ltimgFile, int xDim, int yDim, PDP& ppdp)
 void getInput(FILE *infile, int freq[], char ageMap[MAX_SPECIES][80], PDP& pdp, int BDANo, double wAdfGeoTransform[])
 {
 	GDALAllRegister();
-
 	printMessage("Reading input.");
 
 	if (_mkdir(parameters.outputDir) != 0)

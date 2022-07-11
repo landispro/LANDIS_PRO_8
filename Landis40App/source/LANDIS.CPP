@@ -481,8 +481,8 @@ int main(int argc, char *argv[])
 
 	time(&ltime);
 
-	printf("Starting LANDIS PRO 7.1 at %s", ctime(&ltime));
 
+	printf("Starting LANDIS PRO 8 at %s", ctime(&ltime));
 
 
 	if ((argc != 2) && (argc != 3) && (argc != 4))  { argHelp(); exit(255); }
@@ -548,7 +548,7 @@ int main(int argc, char *argv[])
 	else
 		printf("input: %s\n", argv[3]);
 
-	printf("Beginning Landis 7.1 Pro Run.\n");
+	printf("Beginning Landis 8 Pro Run.\n");
 
 	if (envOn > 0)
 		printf("Environment will be updated every %d iteration\n", envOn);
@@ -1393,6 +1393,7 @@ void Succession_Landis70(int snr, int snc, PDP& pdp) //bsl
 		{
 			pdp.sTSLMortality[i][j] += (short)sites.TimeStep;
 
+			//ToDo: move out of the loop 
 			if ((gDLLMode & G_WIND) != 0)
 				pdp.sTSLWind[i][j] += (short)sites.TimeStep;
 
@@ -1410,6 +1411,8 @@ void Succession_Landis70(int snr, int snc, PDP& pdp) //bsl
 					lc_site->SpecieIndex(k)->GrowTree();
 
 				KillTrees(i, j, pdp);
+				//ToDo:add it to here?
+				//sites.GetMatureTree();
 			}
 		}
 	}
@@ -1980,6 +1983,9 @@ void singularLandisIteration(int itr, int snr, int snc, double wAdfGeoTransform[
 
 	if (itr % sites.TimeStep == 0)
 	{
+		string debugFilename = "year_" + to_string(itr) + ".txt";
+		FILE* dbfp = fopen(debugFilename.c_str(), "w");
+
 		time(&ltime);
 
 		printf("Start succession ... at %s\n", ctime(&ltime));
@@ -2024,6 +2030,10 @@ void singularLandisIteration(int itr, int snr, int snc, double wAdfGeoTransform[
 		printf("Finish succession at %sit took %ld seconds\n", ctime(&ltimeTemp), ltimeDiff);
 
 		fprintf(fpforTimeBU, "Processing succession: %ld seconds\n", ltimeDiff);
+
+		fprintf(dbfp, "\n");
+
+		fclose(dbfp);
 
 	}
 

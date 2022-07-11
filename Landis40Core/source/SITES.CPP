@@ -1992,9 +1992,12 @@ void SITES::SeedGermination(SITE* siteptr, LANDUNIT *l, int RDFlag)
 						Seedling[i - 1] = specie_i->AvailableSeed * l->probRepro(i) + temp;
 
 						const int ran = rand() % 10 + 1; // ran in the range 1 to 10
-
-						if (ran <= 1)
-							Seedling[i - 1] += 1;
+						//Sam Zou
+						if (Seedling[i - 1] > 0.000000001)
+						{
+							if (ran <= 1)
+								Seedling[i - 1] += 1;
+						}
 					}
 
 				}
@@ -2024,9 +2027,12 @@ void SITES::SeedGermination(SITE* siteptr, LANDUNIT *l, int RDFlag)
 						Seedling[i - 1] = seedlingTemp * l->probRepro(i) + temp;
 
 						const int ran = rand() % 10 + 1; // ran in the range 1 to 10
-
-						if (ran <= 1)
-							Seedling[i - 1] += 1;
+												//Sam Zou
+						if (Seedling[i - 1] > 0.000000001)
+						{
+							if (ran <= 1)
+								Seedling[i - 1] += 1;
+						}
 					}
 
 				}
@@ -2078,8 +2084,12 @@ void SITES::SeedGermination(SITE* siteptr, LANDUNIT *l, int RDFlag)
 
 						const int ran = rand() % 10 + 1; // ran in the range 1 to 10
 
-						if (ran <= 1)
-							Seedling[i - 1] += 1;
+												//Sam Zou
+						if (Seedling[i - 1] > 0.000000001)
+						{
+							if (ran <= 1)
+								Seedling[i - 1] += 1;
+						}
 					}
 				}
 			}
@@ -2105,9 +2115,12 @@ void SITES::SeedGermination(SITE* siteptr, LANDUNIT *l, int RDFlag)
 						Seedling[i - 1] = seedlingTemp * l->probRepro(i) + temp;
 
 						const int ran = rand() % 10 + 1; // ran in the range 1 to 10
-
-						if (ran <= 1)
-							Seedling[i - 1] += 1;
+												//Sam Zou
+						if (Seedling[i - 1] > 0.000000001)
+						{
+							if (ran <= 1)
+								Seedling[i - 1] += 1;
+						}
 					}
 				}
 			}
@@ -2156,9 +2169,12 @@ void SITES::SeedGermination(SITE* siteptr, LANDUNIT *l, int RDFlag)
 						Seedling[i - 1] = specie_i->AvailableSeed * l->probRepro(i) + temp;
 						
 						const int ran = rand() % 10 + 1; // ran in the range 1 to 10
-
-						if (ran <= 1)
-							Seedling[i - 1] += 1;
+												//Sam Zou
+						if (Seedling[i - 1] > 0.000000001)
+						{
+							if (ran <= 1)
+								Seedling[i - 1] += 1;
+						}
 					}
 				}
 
@@ -2186,9 +2202,12 @@ void SITES::SeedGermination(SITE* siteptr, LANDUNIT *l, int RDFlag)
 						Seedling[i - 1] = seedlingTemp * l->probRepro(i) + temp;
 
 						const int ran = rand() % 10 + 1; // ran in the range 1 to 10
-
-						if (ran <= 1)
-							Seedling[i - 1] += 1;
+												//Sam Zou
+						if (Seedling[i - 1] > 0.000000001)
+						{
+							if (ran <= 1)
+								Seedling[i - 1] += 1;
+						}
 					}
 				}
 
@@ -3071,7 +3090,7 @@ void SITES::Read70OutputOption(char *FileName)
 {
 	char temp[100];
 
-	printf("reading Landis 70 output customization file...\n");
+	printf("reading Landis 80 output customization file...\n");
 
 	FILE *fp;
 	if ((fp = LDfopen(FileName, 1)) == NULL)
@@ -3284,8 +3303,8 @@ void SITES::Read70OutputOption(char *FileName)
 
 
 	fscanc(fp, "%s", temp);
-
-	if (strcmp(temp, "N/A") != 0)
+	 //if (strcmp(temp, "N") != 0)
+	 if ((strcmp(temp, "N/A") != 0)&& (strcmp(temp, "N") != 0))
 	{
 		Flag_AgeDistStat = 1;
 

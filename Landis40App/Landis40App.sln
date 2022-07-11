@@ -1,24 +1,17 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FuelDll", "..\FuelDll\FuelDll.vcproj", "{44C5C19D-921D-48A3-B4FF-AE1EC54AC62F}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E00EB8F0-8911-49FB-B93B-7FC1FBA320F1} = {E00EB8F0-8911-49FB-B93B-7FC1FBA320F1}
-	EndProjectSection
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.902
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FuelDll", "..\FuelDll\FuelDll.vcxproj", "{44C5C19D-921D-48A3-B4FF-AE1EC54AC62F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HarvestDll", "..\Harvestdll\HarvestDll.vcproj", "{06A6B13A-C36E-4D90-BB07-E36EE70F8865}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E00EB8F0-8911-49FB-B93B-7FC1FBA320F1} = {E00EB8F0-8911-49FB-B93B-7FC1FBA320F1}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HarvestDll", "..\Harvestdll\HarvestDll.vcxproj", "{06A6B13A-C36E-4D90-BB07-E36EE70F8865}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Landis40App", "Landis40App.vcproj", "{8D089B87-2999-462B-86EB-A994CCE87886}"
-	ProjectSection(ProjectDependencies) = postProject
-		{44C5C19D-921D-48A3-B4FF-AE1EC54AC62F} = {44C5C19D-921D-48A3-B4FF-AE1EC54AC62F}
-		{06A6B13A-C36E-4D90-BB07-E36EE70F8865} = {06A6B13A-C36E-4D90-BB07-E36EE70F8865}
-		{E00EB8F0-8911-49FB-B93B-7FC1FBA320F1} = {E00EB8F0-8911-49FB-B93B-7FC1FBA320F1}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Landis80App", "Landis40App.vcxproj", "{8D089B87-2999-462B-86EB-A994CCE87886}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Landis40Core", "..\Landis40Core\Landis40Core.vcproj", "{E00EB8F0-8911-49FB-B93B-7FC1FBA320F1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Landis80Core", "..\Landis40Core\Landis40Core.vcxproj", "{E00EB8F0-8911-49FB-B93B-7FC1FBA320F1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FireDll", "..\FireDll\FireDll.vcxproj", "{49CE4BCC-B359-42FA-86F7-1CEDA41E28B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,8 +53,19 @@ Global
 		{E00EB8F0-8911-49FB-B93B-7FC1FBA320F1}.Release|Win32.Build.0 = Release|Win32
 		{E00EB8F0-8911-49FB-B93B-7FC1FBA320F1}.Release|x64.ActiveCfg = Release|x64
 		{E00EB8F0-8911-49FB-B93B-7FC1FBA320F1}.Release|x64.Build.0 = Release|x64
+		{49CE4BCC-B359-42FA-86F7-1CEDA41E28B0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{49CE4BCC-B359-42FA-86F7-1CEDA41E28B0}.Debug|Win32.Build.0 = Debug|Win32
+		{49CE4BCC-B359-42FA-86F7-1CEDA41E28B0}.Debug|x64.ActiveCfg = Debug|x64
+		{49CE4BCC-B359-42FA-86F7-1CEDA41E28B0}.Debug|x64.Build.0 = Debug|x64
+		{49CE4BCC-B359-42FA-86F7-1CEDA41E28B0}.Release|Win32.ActiveCfg = Release|Win32
+		{49CE4BCC-B359-42FA-86F7-1CEDA41E28B0}.Release|Win32.Build.0 = Release|Win32
+		{49CE4BCC-B359-42FA-86F7-1CEDA41E28B0}.Release|x64.ActiveCfg = Release|x64
+		{49CE4BCC-B359-42FA-86F7-1CEDA41E28B0}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7AB69E50-D1E7-4DF4-A6CB-10F8DC1BD900}
 	EndGlobalSection
 EndGlobal

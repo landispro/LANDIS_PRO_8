@@ -2,15 +2,15 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{b89d7c82-1dc3-482d-a8f2-e6cd2d0879ba}</UniqueIdentifier>
+      <UniqueIdentifier>{269482e0-d82d-47cf-abec-dbbe03ce99db}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{422b3cd4-16e4-4e59-9f10-adeb0d0903ae}</UniqueIdentifier>
+      <UniqueIdentifier>{e22bf8b9-f93b-4706-8116-9d7c8d4fecf6}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
     <Filter Include="Resource Files">
-      <UniqueIdentifier>{ebc79cca-f353-42d1-b8c4-65c560a708f7}</UniqueIdentifier>
+      <UniqueIdentifier>{78c413ad-80a0-4eb0-bd52-3a6d45dfd21e}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
   </ItemGroup>
@@ -102,12 +102,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Lock.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\DEIntegrationConstants.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\DEIntegrator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
