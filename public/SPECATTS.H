@@ -72,6 +72,7 @@ public:
 
 	int* get_speces_maxD();
 	int* get_specesefctD();
+	int* get_specesmaturity();
 	//</Add By Qia on July 2 2009>
 
 private:
@@ -81,6 +82,8 @@ private:
 	SPECIESATTR *specAttrs;          //Array holding all species attributes.
 	int* speces_maxD;
 	int* specesefctD;
+
+	int *speces_maturity;
 
 	int numAttrs;                    //Number of species attributes.
 

@@ -16,6 +16,10 @@ float threshold = 0.65;
 float total = 0.95;
 int repeatnum = 100;
 float caltime = 0.9;
+bool *isLimiter;
+int **randmatrix;
+
+ 
  
 bool seeding_prob::isEqual(double a, double b) {
 	if (fabs(a - b) < EPS) {
@@ -52,9 +56,25 @@ double seeding_prob::caculate_integration(double a, double b, int precision) {
 }
 
 
+unsigned long seeding_prob::factorial(int n) {
+	if (n == 0 || n == 1) return 1; // 0! 和 1! 都为1
+	unsigned long long result = 1;
+	for (int i = 2; i <= n; ++i) {
+		result *= i;
+	}
+	return result;
+}
 
-
-
+// 函数来计算 S_k = n(n + 1)(n + 2)...(n + (k - 1)) / k!
+double seeding_prob::S(int n, int k) {
+	if (k <= 0) return 0; // k 必须为正数
+	double numerator = 1.0; // 分子的初始化
+	for (int i = 0; i < k; ++i) {
+		numerator *= (n + i); // 计算 n(n + 1)(n + 2)...(n + (k - 1))
+	}
+	unsigned long long denominator = factorial(k); // 计算 k!
+	return numerator / denominator; // 返回 S_k = 分子 / 分母
+}
 
 
 seeding_prob::seeding_prob()
@@ -64,14 +84,15 @@ seeding_prob::seeding_prob()
 	minprob4spe = NULL;
 	hilmt4spec = NULL;
 	numcell_all_list = NULL;
+	numLimiters = NULL;
 }
 
 
-void seeding_prob::cal_seeding_prob(const int cell_size_in, const int specNum_in, const int* speces_maxD, const int* specesefctD, const int snr_in, const int snc_in)
+void seeding_prob::cal_seeding_prob(const int cell_size_in, const int specNum_in, const int* speces_maxD, const int* specesefctD, const int snr_in, const int snc_in,const int* specesmaturity, const int timestep)
 {
 	assert(cell_size_in > 0);
-
 	cell_size = cell_size_in;
+
 	snr = snr_in;
 	snc = snc_in;
 	specNum = specNum_in;
@@ -82,10 +103,86 @@ void seeding_prob::cal_seeding_prob(const int cell_size_in, const int specNum_in
 	numcell_all_list = new int[specNum]();
 	hilmt4spec = new int[specNum]();
 
+	int num_cell = snr * snc;
+	numLimiters = new int**[specNum];
+	 
+	isLimiter = new bool[specNum]();
+	randmatrix = new int*[specNum]();
+	timecount = new int[specNum]();
+
 	for (int i = 0; i < specNum; i++)
 	{
-		const int numcellside = init4each(speces_maxD[i], specesefctD[i], i);
+		 
+	     const int numcellside = init4each(speces_maxD[i], specesefctD[i], i);
+
+		numLimiters[i] = new int*[snr_in];
+		numLimiters[i][0] = new int[num_cell]();
+		 
+		randmatrix[i] = new int[100];
+
+		int count = 0;
+
+		if (cell_size_in > speces_maxD[i])
+		{
+			//count = floor(cell_size_in / speces_maxD[i]) * specesmaturity[i]/timestep+1;
+			count = ceil(cell_size_in / speces_maxD[i]) * specesmaturity[i] / timestep ;
+		}
+
+		timecount[i] = count;
+		printf("\n Calculate Limiter cell_size =%d maxD=%d, count=%d \n", cell_size_in, speces_maxD[i], timecount[i]);
+
+		for (int j = 0; j < snr; j++)
+		{
+			numLimiters[i][j] = new int[snc]();
+
+			for (int k = 0; k < snc; k++)
+			{
+				numLimiters[i][j][k] = -2;
+				//if (count == 0)
+				//{
+				//	numLimiters[i][j][k] = count;
+				//}
+				//else
+				//{
+				//	int min = 0, max = count;
+				//	random_device seed;//硬件生成随机数种子
+				//	ranlux48 engine(seed());//利用种子生成随机数引擎
+				//	uniform_int_distribution<> distrib(min, max);//设置随机数范围，并为均匀分布
+				//	int random = distrib(engine);//随机数
+
+				//	numLimiters[i][j][k] = 0;
+				//	if (j == snr - 1 && k == 0)
+				//	{
+				//		numLimiters[i][j][k] = ceil(count/2);
+				//		printf("\n Calculate timecount i =%d j=%d k=%d,  timecount=%d ", i, j, k, numLimiters[i][j][k]);
+				//	}
+				//}
+			}
+		}
+
+		isLimiter[i] = false;
+
+		if (cell_size < speces_maxD[i] && cell_size * 2 > speces_maxD[i])
+		{
+			isLimiter[i] = true;
+
+			int kk = (speces_maxD[i] - cell_size) * 100 / cell_size;
+
+			for (int jj = 0; jj < kk; jj++)
+			{
+				randmatrix[i][jj] = 1;
+			}
+
+			for (int jj = kk; jj < 100; jj++)
+			{
+				randmatrix[i][jj] = 0;
+			}
+
+		}
+ 
 	}
+
+
 }
 
 
@@ -269,14 +366,17 @@ int seeding_prob::init4each(const float max_dist, const float specesefctD, const
 	}
 
 
-	for (int i = 0; i < numcellside; i++)
-	{
-		for (int j = 0; j < numcellside; j++)
-		{
-			prob4square[spec_id][i][j] = prob4square[spec_id][i][j] * total / sum;
- 		 
-		}
-	}
+	//updated by Xianghua 9/9/2022
+	//for (int i = 0; i < numcellside; i++)
+	//{
+	//	for (int j = 0; j < numcellside; j++)
+	//	{
+	//		prob4square[spec_id][i][j] = prob4square[spec_id][i][j] * total / sum;
+ //		 
+	//	}
+	//}
+
+	prob4square[spec_id][offset][offset] = total - sum + prob4square[spec_id][offset][offset];
 
 	sum = 0;
 
@@ -350,11 +450,31 @@ seeding_prob::~seeding_prob()
 	minprob4spe = NULL;
 }
 
+//unsigned long long factorial(int n) {
+//	if (n == 0 || n == 1) return 1; // 0! 和 1! 都为1
+//	unsigned long long result = 1;
+//	for (int i = 2; i <= n; ++i) {
+//		result *= i;
+//	}
+//	return result;
+//}
+//
+// 函数来计算 S_k = n(n + 1)(n + 2)...(n + (k - 1)) / k!
+//double S(int n, int k) {
+//	if (k <= 0) return 0; // k 必须为正数
+//	double numerator = 1.0; // 分子的初始化
+//	for (int i = 0; i < k; ++i) {
+//		numerator *= (n + i); // 计算 n(n + 1)(n + 2)...(n + (k - 1))
+//	}
+//	unsigned long long denominator = factorial(k); // 计算 k!
+//	return numerator / denominator; // 返回 S_k = 分子 / 分母
+//}
 
 
 
 void seeding_prob::process_seeds_on_site(int spec_id, int currow, int curcol, unsigned long** numseeds, const unsigned long totalnumseeds)
 {
+
 	// clock_t start_s=clock();
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 
@@ -362,7 +482,39 @@ void seeding_prob::process_seeds_on_site(int spec_id, int currow, int curcol, un
 
 	const int norm_currow = currow - 1;
 	const int norm_curcol = curcol - 1;
+
+ 
+	//	printf(" Process_seeds_on_site: spec_id =%d currow=%d curcol=%d,   \n ", spec_id, norm_currow, norm_curcol);
+
+	//reduce 1 for each timestep
+	if (numLimiters[spec_id][norm_currow][norm_curcol] <= -1)
+	{
+		numseeds[norm_currow][norm_curcol] += totalnumseeds;
+		
+		return;
+	}
+
+	if (numLimiters[spec_id][norm_currow][norm_curcol] >= 1)
+	{
+		numseeds[norm_currow][norm_curcol] += totalnumseeds;
+		numLimiters[spec_id][norm_currow][norm_curcol] = numLimiters[spec_id][norm_currow][norm_curcol] - 1;
+		return;
+	}
 	
+ 
+	if (isLimiter[specNum])
+	{
+		int sel = rand() % 100;
+		//if (norm_currow == 0 && norm_curcol == 0)
+		//{
+		//	printf("\n is Random select limiter =%d value=%d\n", sel, randmatrix[specNum][sel]);
+		//}
+		
+		if (randmatrix[specNum][sel] == 0)
+		{
+			return;
+		}
+	}
 	//sampling============================================================================
 	std::default_random_engine generator(seed);
 	unsigned long sumofbio = 0;
@@ -378,7 +530,7 @@ void seeding_prob::process_seeds_on_site(int spec_id, int currow, int curcol, un
 			continue;
 
 		const int prob4square_row_id = i + offset;
-
+		
 		for (int j = -offset; j<=offset; j++)
 		{
 			const int spread_col = norm_curcol + j;

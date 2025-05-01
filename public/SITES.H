@@ -66,6 +66,7 @@ struct DispersalParam
 
 	int cpu_id;
 	unsigned long** gl_numseeds;
+	int ** gl_limiter;
 };
 
 
@@ -161,7 +162,7 @@ public:
 
 	//int Get_scsssd_size(int k);
 
-	void GetSeedDispersalProbability(int snr, int snc);
+	void GetSeedDispersalProbability(int snr, int snc, int reclYear);
 
 	void GetSeedDispersalonSite(DispersalParam& param);
 
@@ -210,6 +211,7 @@ public:
 
 	void NaturalMortality_killbytargetRD(SITE * siteptr, int Row, int Col, double targetRD);
 
+	void SITES::set_all_speces_maturity(int* specesmaturity);
 
 	void set_all_speces_Dist(int* speces_maxD_in, int* specesefctD_in);
 
@@ -335,9 +337,11 @@ public:
 
 	void SetAgerangeCount(int specindex, int count);
 
-
-
 	void Read70OutputOption(char *FileName);
+
+	unsigned long long factorial(int n);
+
+	double STimeStep(int n, int k);
 
 public:
 
@@ -459,6 +463,10 @@ public:
 
 	int  *SpeciesAgerangeArray;
 
+	int** randmatrix;
+
+	float** rk;
+
 private:
 
 	seeding_prob seed_prob;
@@ -470,6 +478,7 @@ private:
 	float *GrowthRates;
 	float *MortalityRates;
 
+	int* specesmaturity;
 	
 	std::vector<float *> GrowthRates_file;
 	std::vector<float *> MortalityRates_file;	
@@ -498,11 +507,6 @@ private:
 	unsigned long header[32];			 //Upperleft coordinates of sites
 
 };
-
-
-
-
-
 
 
 

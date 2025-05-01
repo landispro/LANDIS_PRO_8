@@ -2305,7 +2305,7 @@ void getInput(FILE *infile, int freq[], char ageMap[MAX_SPECIES][80], PDP& pdp, 
 	const int num_species = speciesAttrs.number();
 
 	time_step.getSpecNum(num_species);//Add By Qia on July 5 2009
-
+	printf("number of specs %d", num_species);
 	for (int x = 1; x <= num_species; x++)
 		time_step.Setlongevity(x, speciesAttrs(x)->longevity);
 
@@ -2322,15 +2322,19 @@ void getInput(FILE *infile, int freq[], char ageMap[MAX_SPECIES][80], PDP& pdp, 
 
 	const int nCols = simgFile->GetRasterXSize();
 	const int nRows = simgFile->GetRasterYSize();
-
+	printf("Image size nclols=%d nRows=%d", nCols, nRows);
+	 
+ 
+   
 	sites.MaxDistofAllSpec = speciesAttrs.MaxDistanceofAllSpecs;
 
 	sites.MaxShadeTolerance = speciesAttrs.MaxShadeTolerance;
 
+	
 	sites.dim(num_species, nRows, nCols);//need to change Qia Oct 06 2008
 
 	sites.set_all_speces_Dist(speciesAttrs.get_speces_maxD(), speciesAttrs.get_specesefctD());
-
+	sites.set_all_speces_maturity(speciesAttrs.get_specesmaturity());
 	sites.Read70OutputOption(parameters.OutputOption70);
 
 	int biggest_agerange_count = 0;	//changed by houbin 10/25/2017

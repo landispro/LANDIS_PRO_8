@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -94,6 +94,7 @@ SITES::SITES()
 	BDAflag = 0;
 	Windflag = 0;
 	flagAgeRangeOutput = 0;
+
 }
 
 
@@ -610,6 +611,15 @@ void SITES::set_all_speces_Dist(int* speces_maxD_in, int* specesefctD_in)
 	}
 }
 
+void SITES::set_all_speces_maturity(int* specesmaturity_in)
+{
+	specesmaturity = new int[specNum];
+
+	for (int i = 0; i < specNum; i++)
+	{
+		specesmaturity[i] = specesmaturity_in[i];
+	}
+}
 
 
 //This will dimension the size of the map to i rows and j columns, and it
@@ -2280,6 +2290,7 @@ void SITES::GetRDofSite(int Row, int Col)
 		{
 			const int loopnumber = speciesattr_i->longevity / TimeStep;
 
+			int local_total_tree_num = 0;
 			for (int j = 1; j <= loopnumber; j++)
 			{
 				const unsigned int local_tree_num = specie_i->getTreeNum(j, i);
@@ -2292,8 +2303,59 @@ void SITES::GetRDofSite(int Row, int Col)
 					if (siteptr->HighestShadeTolerance < speciesattr_i->shadeTolerance)
 						siteptr->HighestShadeTolerance = speciesattr_i->shadeTolerance;
 				}
+				local_total_tree_num += local_tree_num;
+			}
+			//if (local_total_tree_num > 0)
+			//{
+			//	printf("\n Calculate total tree spec_id =%d Row=%d Col=%d total=%d \n", i-1, Row, Col, local_total_tree_num);
+			//}
+			//reet timeount to max value when new tree 
+			//if (seed_prob.numLimiters[i - 1][Row - 1][Col - 1] == 0 && local_total_tree_num > 0)
+			//{
+			//	printf("\n reset spec_id =%d Row=%d Col=%d total=%d \n, limiter =%d", i - 1, Row, Col, local_total_tree_num, seed_prob.numLimiters[i - 1][Row - 1][Col - 1]);
+			//	seed_prob.numLimiters[i - 1][Row - 1][Col - 1] = seed_prob.timecount[i - 1];
+			//}
+
+			int local_total_tree_num_0 = local_total_tree_num + specie_i->getTreeNum(0, i);
+
+
+	/*		if (local_total_tree_num_0 >0 && i == 1)
+				printf("\n Init value. spec_id =%d Row=%d Col=%d total=%d \n, limiter =%d, seedlimiter=%d", i - 1, Row, Col, local_total_tree_num, seed_prob.timecount[i - 1] , seed_prob.numLimiters[i - 1][Row - 1][Col - 1]);*/
+			//reset timecount to 0
+			if (seed_prob.numLimiters[i - 1][Row - 1][Col - 1] > 0 && local_total_tree_num_0 == 0)
+			{
+				seed_prob.numLimiters[i - 1][Row - 1][Col - 1] = -1;
+				//printf("\n All tree is dead. spec_id =%d Row=%d Col=%d total=%d \n, limiter =%d", i - 1, Row, Col, local_total_tree_num, seed_prob.numLimiters[i - 1][Row - 1][Col - 1]);
+			}
+			else if (seed_prob.numLimiters[i - 1][Row - 1][Col - 1] == -1 && local_total_tree_num_0 > 0)
+			{
+				seed_prob.numLimiters[i - 1][Row - 1][Col - 1] = seed_prob.timecount[i - 1] - speciesattr_i->maturity / TimeStep;
+				//printf("\n New site with the new limiter. spec_id =%d Row=%d Col=%d total=%d \n, limiter =%d, speciesattr_i->maturity =%d, TimeStep=%d, seed_prob.timecount=%d", i - 1, Row, Col, local_total_tree_num, seed_prob.numLimiters[i - 1][Row - 1][Col - 1],speciesattr_i->maturity, TimeStep, seed_prob.timecount[i - 1]);
+				
+				if (seed_prob.numLimiters[i - 1][Row - 1][Col - 1] < 0)
+				{
+					seed_prob.numLimiters[i - 1][Row - 1][Col - 1] = 0;
+
+					//printf("\n reset numLimiters");
+				}
+			}
+			else if (seed_prob.numLimiters[i - 1][Row - 1][Col - 1] == -2 && local_total_tree_num_0 > 0)
+			{
+				//seed_prob.numLimiters[i - 1][Row - 1][Col - 1] = seed_prob.timecount[i - 1]/2-1;
+				seed_prob.numLimiters[i - 1][Row - 1][Col - 1] = seed_prob.timecount[i - 1] -1;
+				if (seed_prob.numLimiters[i - 1][Row - 1][Col - 1] < 0)
+					seed_prob.numLimiters[i - 1][Row - 1][Col - 1] = 0;
+				//printf("\n Init value = seed_prob.timecount[i - 1] . spec_id =%d Row=%d Col=%d total=%d \n, limiter =%d", i - 1, Row, Col, local_total_tree_num, seed_prob.numLimiters[i - 1][Row - 1][Col - 1]);
+
+			}
+			else if (seed_prob.numLimiters[i - 1][Row - 1][Col - 1] == -2 && local_total_tree_num_0 == 0)
+			{
+				seed_prob.numLimiters[i - 1][Row - 1][Col - 1] = -1;
 			}
 		}
+
+		
+
 	}
 }
 
@@ -2340,7 +2402,8 @@ void SITES::GetMatureTree()
 		{
 			SITE* siteptr = SITES::operator()(i, j);
 			const int num_species = siteptr->number();
-
+			
+				
 			for (int k = 1; k <= num_species; k++)
 			{
 				SPECIE* lc_specie = siteptr->SpecieIndex(k);
@@ -2402,11 +2465,13 @@ void SITES::GetSeedNumberOnSite_type2(int Row, int Col, int species_id)
 				{
 					SITE* lc_site = SITES::operator()(i, j);
 					const int lc_mature_treenum = lc_site->SpecieIndex(k)->GetMatureTreeValue();
-					const int lc_totalseed = lc_site->specAtt(k)->TotalSeed;
 
+					printf("lc_total seed %d\n", lc_site->specAtt(k)->TotalSeed);
+					const int lc_totalseed = lc_site->specAtt(k)->TotalSeed * rk[k][1];
+					
 					// const float lc_seedrain = GetSeedRain(k, TempDist);
 					const double lc_seedrain = seed_prob.get_seed_prob(k-1, row_offset, col_offset);
-
+					 
 					Avail_Seed += lc_seedrain * lc_mature_treenum * lc_totalseed * TimeStep;
 				}
 			}
@@ -2850,6 +2915,7 @@ void SITES::NaturalMortality(SITE * siteptr, int Row, int Col, int StartAge, con
 			}
 		}
 	}
+
 }
 
 
@@ -3538,21 +3604,31 @@ void SITES::Read70OutputOption(char *FileName)
 
 float SITES::GetGrowthRates(int spec, int year, int landtype_index)
 {
+
 	const int consterm1 = 320 / TimeStep + 1;
 	const int consterm2 = specNum * consterm1;
 	const int consterm3 = (spec - 1) * consterm1 + year - 1;
 
 
 	if (spec < 1 || spec > specNum || spec * year >= consterm2)
-		errorSys("Out bound in GetGrowthRates\n", STOP);
-	
+	{
+		char err[80];
+		sprintf(err, "SITES::GetGrowthRates(int spec, int year, int landtype_index)-> (%d, %d, %d) specNum =%d,consterm1=%d consterm2=%d consterm3=%d ", spec, year, landtype_index, specNum, consterm1, consterm2, consterm3);
+		errorSys(err, STOP);
+	}
 	if (GrowthRates_file.size() == 0)
 		return GrowthRates[consterm3];		
 	else
 	{
 		if (landtype_index >= GrowthRates_file.size())
-			errorSys("Out bound in GetGrowthRates\n", STOP);
+		{
+			char err[80];
+			sprintf(err, "SITES::GetGrowthRates landtype_index >= GrowthRates_file.size() (int spec, int year, int landtype_index)-> (%d, %d, %d) specNum =%d,consterm1=%d consterm2=%d consterm3=%d GrowthRates_file.size()=%d \n", spec, year, landtype_index, specNum, consterm1, consterm2, consterm3, GrowthRates_file.size());
 
+			errorSys(err, STOP);
+			//errorSys("Out bound in GetGrowthRates\n", STOP);
+		}
+	
 		return GrowthRates_file.at(landtype_index)[consterm3];
 	}
 }
@@ -3696,9 +3772,45 @@ void SITES::SetVolume(int growthrate_flag, int spec, int year, float value, int 
 
 
 
-void SITES::GetSeedDispersalProbability(int snr, int snc)
+void SITES::GetSeedDispersalProbability(int snr, int snc, int numbOfIter)
 {
-	seed_prob.cal_seeding_prob(CellSize, specNum, speces_maxD, specesefctD, snr, snc);
+ 
+	seed_prob.cal_seeding_prob(CellSize, specNum, speces_maxD, specesefctD, snr, snc,specesmaturity, TimeStep);
+
+ 
+	
+
+	//根据模拟时间T除以时间步长求得模拟迭代次数L = 𝑇 / timestep
+
+	 
+		 
+	int L = numbOfIter;
+
+	int totalYear = numbOfIter * TimeStep;
+	
+	rk = new float*[specNum]();
+
+	printf("\n T   L=%d  reclYear=%d TimStp=%d\n", L, totalYear, TimeStep);
+	for (int i = 0; i < specNum; i++)
+	{
+
+		//针对不同树种的性成熟年龄Mat_age得到树种传播迭代次数𝐾_𝑚𝑎𝑥 = 𝑇 / "Mat_age"
+		int Kmax = totalYear / specesmaturity[i];
+		//其中一年时间步长的种子数量〖𝑆_(timestep = 1)〗_𝐾 = (𝑛(𝑛 + 1)(𝑛 + 2)…..(𝑛 + (𝐾−1))) / 𝐾!(n = Mat_age)
+		rk[i] = new float[Kmax]();
+		for  (int k = 1; k < Kmax; k++)
+		{
+			  double s1 = STimeStep(specesmaturity[i], k);
+			  double sk = STimeStep(specesmaturity[i] / TimeStep, k) * pow(TimeStep, k);
+
+			rk[i][k] = s1/sk;
+
+			printf("\n reclYear=%d TimeStep=%d MatureAge =%d, k=%d s1 =%f sk=%f i=%d k=%d  rk[i][k]=%f \n", totalYear, TimeStep, specesmaturity[i],k, s1,sk, i,k, rk[i][k]);
+		}
+
+		
+	}
+	 
 }
 
 
@@ -3719,7 +3831,7 @@ void SITES::GetSeedDispersalonSite(DispersalParam& param)
 		int currow = (param.rows)[i];
 		int curcol = (param.cols)[i];
 		unsigned long lc_numseed = (param.lc_numseeds)[i];
-
+		
 		seed_prob.process_seeds_on_site(norm_spec_id, currow, curcol, numseeds, lc_numseed);
 	}
 }
@@ -4224,5 +4336,62 @@ int SITES::SITE_LocateinSortIndex(SITE *site, int *pos, int *ifexist)
 		return -1;
 	}
 
+
+
+
+
 }
+
+unsigned long long SITES::factorial(int n) {
+	if (n == 0 || n == 1) return 1; // 0! 和 1! 都为1
+	unsigned long long result = 1;
+	for (int i = 2; i <= n; ++i) {
+		result *= i;
+	//	printf("\ndenominator  = %llu", result);
+	}
+	return result;
+}
+
+// 函数来计算 S_k = n(n + 1)(n + 2)...(n + (k - 1)) / k!
+double SITES::STimeStep(int n, int k) {
+//	printf("\nn = %d, k=%d\n", n, k);
+	if (k <= 0) return 0; // k 必须为正数
+	unsigned long long numerator = 1; // 分子的初始化
+	for (int i = 0; i < k; ++i) {
+		numerator *= (n + i); // 计算 n(n + 1)(n + 2)...(n + (k - 1))
+//		printf("\nnumerator  = %llu", numerator);
+	}
+	unsigned long long denominator = factorial(k); // 计算 k!
+
+	return numerator / denominator; // 返回 S_k = 分子 / 分母
+
+
+}
+
+
+
+// 函数来计算 S_k = n(n + 1)(n + 2)...(n + (k - 1)) / k!
+//double SITES::S(int n, int k) {
+//	printf("\nn = %d, k=%d\n", n, k);
+//	if (k <= 0) return 0; // k 必须为正数
+//	unsigned long long numerator = 1; // 分子的初始化
+//
+//	float result =1.0;
+//
+//	for (int i = 0; i < k; ++i) {
+//
+//		float result1 = (float)(n + i) / (float)(i + 1);
+//		
+//		result = result * result1;
+//
+//		printf("\n i= %d result1=%f Result =  %f   (n+i) = %d (i+1)=%d\n", i, result1, result, n+i, i+1);
+// 
+//	}
+//	 
+//	printf("\nResult =  %lf\n",result)  ;
+//	return result; // 返回 S_k = 分子 / 分母
+
+
+//}
+
 

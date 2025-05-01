@@ -57,6 +57,7 @@ void SPECIESATTRS::read(FILE* infile, int cellSize)
 
 	speces_maxD = new int [numAttrs];
 	specesefctD = new int [numAttrs];
+	speces_maturity = new int[numAttrs];
 
 	MaxDistanceofAllSpecs = 0;
 
@@ -64,7 +65,7 @@ void SPECIESATTRS::read(FILE* infile, int cellSize)
 	{
 		speces_maxD[i] = specAttrs[i].maxD;
 		specesefctD[i] = specAttrs[i].effectiveD;
-
+		speces_maturity[i] = specAttrs[i].maturity;
 		if (specAttrs[i].maxD > MaxDistanceofAllSpecs)
 			MaxDistanceofAllSpecs = specAttrs[i].maxD;
 	}
@@ -102,6 +103,13 @@ int* SPECIESATTRS::get_specesefctD()
 	return specesefctD;
 }
 
+int* SPECIESATTRS::get_specesmaturity()
+{
+	if (speces_maturity == NULL)
+		exit(1);
+
+	return speces_maturity;
+}
 
 
 

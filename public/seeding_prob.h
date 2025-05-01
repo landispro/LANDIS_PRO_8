@@ -1,4 +1,4 @@
-#ifndef _Locate_seeds_H  
+﻿#ifndef _Locate_seeds_H  
 #define _Locate_seeds_H  
 
 #include <process.h>
@@ -26,6 +26,8 @@ class DLLCLASS seeding_prob
 {
 
 public:
+	int *** numLimiters;
+	int* timecount;
 	seeding_prob();
 
 	~seeding_prob();
@@ -34,15 +36,17 @@ public:
 	double caculate_integration(double a, double b, int precision);
 	bool isEqual(double a, double b);
 	double function(double x);
-	void cal_seeding_prob(const int cell_size, const int specNum_in, const int* speces_maxD_in, const int* specesefctD_in, const int snr_in, const int snc_in);
+	void cal_seeding_prob(const int cell_size, const int specNum_in, const int* speces_maxD_in, const int* specesefctD_in, const int snr_in, const int snc_in, const int* specesmaturity, const int timestep);
 
 	double get_seed_prob(const int spec_id, const int relative_row, const int relative_col);
-
+	
 	double get_seed_prob_circle(const int spec_id, const int relative_row, const int relative_col);
 	
 	void print() const;
 
 	void process_seeds_on_site(int k, int currow, int curcol, unsigned long** numseeds, const unsigned long lc_numseeds);
+	unsigned long factorial(int n);
+	double S(int n, int k);
 
 private:
 
@@ -80,7 +84,7 @@ private:
 
 	double constsca;
 
-	Mutex mut_ex;
+	//Mutex mut_ex;
 	
 private:
 	
@@ -89,12 +93,14 @@ private:
 	double*** prob4square;
 	double**  cdf4species;
 	double*	  minprob4spe;
+	
 
 	int* hilmt4spec; //record hilmt for each species
 	int* wghts;
 
 	double *** prob4circle;
 	bool iscircle=false;
+	bool isInit = true;
 };
 
 #endif  

@@ -2,15 +2,15 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{269482e0-d82d-47cf-abec-dbbe03ce99db}</UniqueIdentifier>
+      <UniqueIdentifier>{c0f0ff9d-1103-4ca9-b24e-d201acbc8bbe}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{e22bf8b9-f93b-4706-8116-9d7c8d4fecf6}</UniqueIdentifier>
+      <UniqueIdentifier>{90b5ee7c-38d3-4577-a397-a923a1572cf3}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
     <Filter Include="Resource Files">
-      <UniqueIdentifier>{78c413ad-80a0-4eb0-bd52-3a6d45dfd21e}</UniqueIdentifier>
+      <UniqueIdentifier>{aac675d1-0f4d-46f7-8111-ca348192644a}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
   </ItemGroup>
@@ -52,9 +52,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\seeding_prob.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Lock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -99,9 +96,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\public\seeding_prob.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Lock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

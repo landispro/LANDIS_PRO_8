@@ -167,6 +167,7 @@ char reMethods[MAX_RECLASS][80], ageMaps[MAX_SPECIES][80];
 int gDLLMode;
 
 
+
 // static const int max_thread_num = omp_get_max_threads() - 1;
 static const int max_thread_num = omp_get_max_threads();
 int* gl_cpuid = new int [max_thread_num]();
@@ -796,7 +797,7 @@ int main(int argc, char *argv[])
 	OutputScenario();
 
 	initiateOutput_landis70Pro();
-
+	
 	snr = sites.numRows();
 	snc = sites.numColumns();
 
@@ -808,7 +809,8 @@ int main(int argc, char *argv[])
 
 	numbOfIter = parameters.numIter;
 
-	sites.GetSeedDispersalProbability(snr, snc);
+	
+	sites.GetSeedDispersalProbability(snr, snc, numbOfIter);
 	// sites.GetSeedDispersalProbability(parameters.SeedRainFile, parameters.SeedRainFlag);
 
 
@@ -820,6 +822,8 @@ int main(int argc, char *argv[])
 	else
 	{
 		FILE *fp;
+
+		printf("Specie Growth Rates file =%s \n", parameters.GrowthFlagFile);
 
 		if ((fp = LDfopen(parameters.GrowthFlagFile, 1)) == NULL)
 			errorSys("Specie Growth Rates file not found.", STOP);
@@ -1189,7 +1193,7 @@ int main(int argc, char *argv[])
 		}
 
 
-		// printf("Processing Year %d\n", i);
+		 printf("Processing Year %d\n", i);
 		//End Harvest Init 2-----------------------------------------------//
 
 		singularLandisIteration(i, snr, snc, wAdfGeoTransform, pdp);
@@ -1379,10 +1383,11 @@ void startDispersalThread(DispersalParam& param, HANDLE& lHandle)
 
 
 // According to shade-rule and RD-rule determine species succession on sites, main function 
-void Succession_Landis70(int snr, int snc, PDP& pdp) //bsl
+void Succession_Landis70(int snr, int snc, PDP& pdp, int itr) //bsl
 {
+	printf("1: GetMatureTree  %d\n", itr);
 	sites.GetMatureTree();
-
+	printf("2: num_speciesAttrs\n");
 	const int num_speciesAttrs = speciesAttrs.number();
 
 	//GrowTree
@@ -1417,9 +1422,9 @@ void Succession_Landis70(int snr, int snc, PDP& pdp) //bsl
 		}
 	}
 	
-	
+	printf("3: GrowTree\n");
 	clock_t gl_start = clock();
-
+	float* rk = new float[num_speciesAttrs]();
 	const static int num_cell = snr * snc;
 
 	unsigned long*** numseeds = new unsigned long** [num_speciesAttrs];
@@ -1431,26 +1436,33 @@ void Succession_Landis70(int snr, int snc, PDP& pdp) //bsl
 
 		for(int i =1; i<snr; i++)
 			numseeds[k][i] = numseeds[k][i-1] + snc;
-	}
+		}
 
 	HANDLE* lc_handle = new HANDLE [num_speciesAttrs]();
 	DispersalParam* disp_param = new DispersalParam[num_speciesAttrs]();
 
-	init_cpu_id();
 
+ 
+
+	init_cpu_id();
 	//get seed number
 	for (int k = 1; k <= num_speciesAttrs; k++)
 	{
+				
 		assert(speciesAttrs(k)->SpType >= 0);
+
+		int kl = itr / speciesAttrs(k)->maturity + 1;
+
+		printf("itr=%d mature =%d kl = %d rk value=%f\n", itr, speciesAttrs(k)->maturity,kl, sites.rk[k-1][kl]);
 
 		//data preparation
 		disp_param[k-1].spec_id = k;
 		disp_param[k-1].gl_numseeds = numseeds[k-1];
 		disp_param[k-1].cpu_id = get_cpu_id();
-
 		for (int i = 1; i <= snr; i++)
 		{
 			for (int j = 1; j <= snc; j++)
+
 			{
 				LANDUNIT* l = sites.locateLanduPt(i, j);
 
@@ -1460,11 +1472,14 @@ void Succession_Landis70(int snr, int snc, PDP& pdp) //bsl
 
 					const int lc_mature_treenum = lc_site->SpecieIndex(k)->GetMatureTreeValue();
 
-					const int lc_totalseed = lc_site->specAtt(k)->TotalSeed;
-
-					unsigned long lc_numseed = lc_mature_treenum * lc_totalseed * sites.TimeStep;
-
+					const int lc_totalseed = lc_site->specAtt(k)->TotalSeed * rk[num_speciesAttrs];
+					//printf("lc_totalseed =%d k=%d  kl =%d kl = %f\n", lc_totalseed,k, kl, sites.rk[k][kl]);
+					unsigned long lc_numseed = lc_mature_treenum * lc_totalseed * sites.TimeStep * sites.rk[k-1][kl];
+					//unsigned long lc_numseed = lc_mature_treenum * lc_totalseed * sites.TimeStep;
 					assert(lc_numseed >= 0);
+
+					//if (k == 1 && lc_numseed >0)
+					// 	printf("lc_numseed=%d spec=%d  i=%d j=%d\n", lc_numseed,k, i,j);
 
 					if (lc_numseed > 0)
 					{
@@ -1475,21 +1490,22 @@ void Succession_Landis70(int snr, int snc, PDP& pdp) //bsl
 				}
 			}
 		}
-
+		printf("4: num_speciesAttrs = %d\n", k);
 		startDispersalThread(disp_param[k-1], lc_handle[k-1]);
 		// sites.GetSeedDispersalonSite(disp_param[k-1]);
 	}
-
+	printf("5: WaitForMultipleObjects\n");
 	WaitForMultipleObjects(num_speciesAttrs, lc_handle, TRUE, INFINITE);
-
+	printf("\n5.1: CloseHandle\n");
 	for (int i = 0; i < num_speciesAttrs; ++i)
 		CloseHandle(lc_handle[i]);
 
 	delete[] lc_handle;
 	delete[] disp_param;
-	
+	printf("5.2: start loop\n");
 	for (int k = 1; k <= num_speciesAttrs; k++)
 	{
+		printf("5.3: num_species=%d \n",k);
 		for (int i = 1; i <= snr; i++)
 		{
 			for (int j = 1; j <= snc; j++)
@@ -1519,7 +1535,7 @@ void Succession_Landis70(int snr, int snc, PDP& pdp) //bsl
 		}
 	}
 
-
+	printf("6: Deleting \n");
 	for(int k=0; k<num_speciesAttrs; k++)
 	{
 		delete[] numseeds[k][0];
@@ -2018,8 +2034,9 @@ void singularLandisIteration(int itr, int snr, int snc, double wAdfGeoTransform[
 					}
 		}
 		
+		printf("Start succession for year %d ... at %s\n", itr, ctime(&ltime));
 
-		Succession_Landis70(snr, snc, pdp);
+		Succession_Landis70(snr, snc, pdp, itr);
 
 		Succesion_output_Mortality_bio_ba(snr, snc, itr / parameters.timestep, pdp, wAdfGeoTransform);
 
