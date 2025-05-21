@@ -129,7 +129,7 @@ void seeding_prob::cal_seeding_prob(const int cell_size_in, const int specNum_in
 		}
 
 		timecount[i] = count;
-		printf("\n Calculate Limiter cell_size =%d maxD=%d, count=%d \n", cell_size_in, speces_maxD[i], timecount[i]);
+		//printf("\n Calculate Limiter cell_size =%d maxD=%d, count=%d \n", cell_size_in, speces_maxD[i], timecount[i]);
 
 		for (int j = 0; j < snr; j++)
 		{

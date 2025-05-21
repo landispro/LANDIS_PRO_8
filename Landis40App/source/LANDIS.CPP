@@ -1490,22 +1490,21 @@ void Succession_Landis70(int snr, int snc, PDP& pdp, int itr) //bsl
 				}
 			}
 		}
-		printf("4: num_speciesAttrs = %d\n", k);
+
 		startDispersalThread(disp_param[k-1], lc_handle[k-1]);
 		// sites.GetSeedDispersalonSite(disp_param[k-1]);
 	}
-	printf("5: WaitForMultipleObjects\n");
 	WaitForMultipleObjects(num_speciesAttrs, lc_handle, TRUE, INFINITE);
-	printf("\n5.1: CloseHandle\n");
+
 	for (int i = 0; i < num_speciesAttrs; ++i)
 		CloseHandle(lc_handle[i]);
 
 	delete[] lc_handle;
 	delete[] disp_param;
-	printf("5.2: start loop\n");
+
 	for (int k = 1; k <= num_speciesAttrs; k++)
 	{
-		printf("5.3: num_species=%d \n",k);
+
 		for (int i = 1; i <= snr; i++)
 		{
 			for (int j = 1; j <= snc; j++)
@@ -1535,7 +1534,6 @@ void Succession_Landis70(int snr, int snc, PDP& pdp, int itr) //bsl
 		}
 	}
 
-	printf("6: Deleting \n");
 	for(int k=0; k<num_speciesAttrs; k++)
 	{
 		delete[] numseeds[k][0];

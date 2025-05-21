@@ -3805,7 +3805,7 @@ void SITES::GetSeedDispersalProbability(int snr, int snc, int numbOfIter)
 
 			rk[i][k] = s1/sk;
 
-			printf("\n reclYear=%d TimeStep=%d MatureAge =%d, k=%d s1 =%f sk=%f i=%d k=%d  rk[i][k]=%f \n", totalYear, TimeStep, specesmaturity[i],k, s1,sk, i,k, rk[i][k]);
+			//printf("\n reclYear=%d TimeStep=%d MatureAge =%d, k=%d s1 =%f sk=%f i=%d k=%d  rk[i][k]=%f \n", totalYear, TimeStep, specesmaturity[i],k, s1,sk, i,k, rk[i][k]);
 		}
 
 		
